@@ -1,7 +1,9 @@
 #define PARSER_HPP
 #include <dirent.h>
 
+#include <bits/stdc++.h>
 using dirent = struct dirent;
+using namespace std;
 
 class parser {
     private:
@@ -9,8 +11,8 @@ class parser {
         string dir_path;
 
     public:
-        Parser(){;}
-        Parser(path):pathName(path) {;}
+        parser(){return;}
+        parser(string path):dir_path(path) {return;}
 
-    void parse(string dir_path){}
-}
+    void parse(string dir_path);
+};
