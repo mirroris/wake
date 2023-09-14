@@ -2,6 +2,7 @@
 #include "parser.hpp"
 #endif
 
+
 /* C */
 #include <dirent.h>
 #include <sys/stat.h>
@@ -20,22 +21,48 @@ void parser::parse(string dir_path){
     mystat st;
     dirent *entry;
 
-    cout << dir_path << endl;
     if ((dir = opendir(dir_path.c_str())) == NULL) {
         cerr << "opendir error" << endl;
         exit(1);
     } 
 
     while((entry = readdir(dir))!=NULL) {
-        string next_dir_path = dir_path + '/';
+        string next_dir_path = dir_path + '/'; 
+        
         if(strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) continue;
         else next_dir_path += entry->d_name;
-        cout << next_dir_path << endl;
+
         stat(next_dir_path.c_str(), &st);
         if(S_ISDIR(st.st_mode)) {
             parse(next_dir_path);
-        } else if(S_ISREG(st.st_mode)){    
-            cout << entry->d_name << endl;
+        } else if(S_ISREG(st.st_mode)){
+
+            int index = 0;
+            while (entry->d_name[index]!='\0' && entry->d_name[index]!='.') {
+                index++;
+            }
+            string fileident = "";
+            while (entry->d_name[index]!='\0') {
+                fileident += entry->d_name[index];
+                index++;
+            }
+
+            if ( fileident.compare(".cpp")!=0) continue; 
+
+            cout << "file (parent):" << entry->d_name << endl;
+
+            ifstream ifs("../" + next_dir_path , ios::in);
+            string buffer;
+
+            if (ifs.is_open()) {
+                cerr << "Failed to open file ("<< next_dir_path << ")." << endl;
+                continue;
+            } else {
+                while ( getline(ifs, buffer) ) {
+                    dep.expl(buffer);
+                }
+                ifs.close();
+            }
         }
     } 
     
