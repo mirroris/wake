@@ -3,26 +3,26 @@
 using namespace std;
 
 typedef enum {
-    linecom,
-    blockcom,
-    code
+    LINECOM,
+    BLOCKCOM,
+    CODE
 } status;
 
 class deptree {
     private:
         unordered_set<string> fid;
-        status  corrent_status;
-        const string include_token = "#inculde";
+        status  current_status;
+        const string include_token = "#include";
 
     public:
         deptree() {
-            corrent_status = code;
+            current_status = CODE;
         }
 
         void depends(string file1, string file2);
         void expl(string line);  
         void init() {
-            corrent_status = code;
+            current_status = CODE;
         }
         string sufheader(string line, int index);
 };

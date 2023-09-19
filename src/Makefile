@@ -3,5 +3,5 @@
 default:  parser/parser.o datastructure/deptree.o
 	g++ main.o parser/parser.o datastructure/deptree.o -o wake 
 
-%.o : %.cpp
+%.o : %.cpp %.hpp
 	g++ -c $< -o $@  

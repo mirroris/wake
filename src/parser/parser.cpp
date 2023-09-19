@@ -47,21 +47,22 @@ void parser::parse(string dir_path){
                 index++;
             }
 
-            if ( fileident.compare(".cpp")!=0) continue; 
+            if ( fileident.compare(".hpp")!=0 && fileident.compare(".cpp")!=0) continue; 
 
-            cout << "file (parent):" << entry->d_name << endl;
+            cout << "file (parent): " << entry->d_name << endl;
 
-            ifstream ifs("../" + next_dir_path , ios::in);
+            ifstream ifs(next_dir_path , ios::in);
             string buffer;
 
+            dep.init();
             if (ifs.is_open()) {
-                cerr << "Failed to open file ("<< next_dir_path << ")." << endl;
-                continue;
-            } else {
                 while ( getline(ifs, buffer) ) {
                     dep.expl(buffer);
                 }
                 ifs.close();
+            } else {
+                cerr << "Failed to open file ("<< next_dir_path << ")." << endl;
+                continue;
             }
         }
     } 

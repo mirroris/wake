@@ -11,67 +11,68 @@ void deptree::depends(string file1, string file2) {
 }
 
 void deptree::expl(string line) {
-    int index = 0;
-    int size = line.size();
+
+    int index_line = 0;
+    int size_line = line.size();
 
     int index_incl = 0;
     int size_incl = include_token.size();
 
-    while (index<size) {
-        if (corrent_status == code){
-            if( index+1 < size && line[index] == '/') {
-                if (line[index+1] == '/') {
-                    corrent_status = linecom;
+    while (index_line<size_line) {
+        if (current_status == CODE){
+            if( index_line+1 < size_line && line[index_line] == '/') {
+                if (line[index_line+1] == '/') {
                     /* if "//" is inclueded, then no need to parse the line */
-                    index=size;
+                    index_line = size_line;
                 }
-                else if (line[index+1] == '*') {
-                    corrent_status = blockcom;
-                    index+=2;
+                else if (line[index_line+1] == '*') {
+                    current_status = BLOCKCOM;
+                    index_line += 2;
                 }
                 else {
-                    index++;
+                    index_line++;
                 }
+                index_incl = 0;
             } else {
-                if (include_token[index_incl] == line[index]) {
+                if (include_token[index_incl] == line[index_line++]) {
+                    index_incl++;
+                    cout << index_incl << endl;
                     if(index_incl == size_incl) {
                         // extract hpp file
-                        string header = sufheader(line, index); 
-                        if (!header.empty()) cout << "depens : " << header << endl;
-                        index_incl = 0;
-                    } else {
-                        index_incl++;
-                    }
-                }
-            }
-        } else if (corrent_status == blockcom) {
-            if (index+1 < size && line[index] == '*' && corrent_status == blockcom) {
-                if(line[index+1] == '/') {
-                    corrent_status = code;
-                    index++;
+                        string header = sufheader(line, index_line); 
+                        if(!header.empty())cout << "\tdepends : " << header << endl;
+                        index_line = size_line;
+                    } 
                 } else {
-                    index++;
+                    index_incl = 0;
                 }
+            } 
+        } else if (current_status == BLOCKCOM) {
+            if (index_line+1 < size_line && line[index_line] == '*') {
+                if(line[index_line+1] == '/') {
+                    current_status = CODE;
+                    index_line+=2;
+                } else {
+                    index_line++;
+                }
+            } else {
+                index_line++;
             }
-        }
+        } 
     } 
     return;
 }
 
 string deptree::sufheader (string line, int index) {
-    string ret;
+    string ret = "";
     int n = line.size();
     while (index<n && line[index]==' ') {
         index++;
     }
-    if (index<n && line[index]=='\"') {
-        index++;
-        ret = "";
+    if (index<n && line[index++]=='\"') {
         while (index<n && line[index]!='\"') {
             ret += line[index++];
         }
-    } else {
-        ret = nullptr;
-    }
+    } 
     return ret; 
 }
