@@ -1,2 +1,0 @@
-Atom NVlink all
-VNLink  vs PCIe

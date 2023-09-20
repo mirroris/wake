@@ -11,7 +11,6 @@ void deptree::depends(string file1, string file2) {
 }
 
 void deptree::expl(string line) {
-    cout << include_token << endl;
     int index_line = 0;
     int size_line = line.size();
 
@@ -36,7 +35,6 @@ void deptree::expl(string line) {
             } else {
                 if (include_token[index_incl] == line[index_line++]) {
                     index_incl++;
-                    cout << index_incl << endl;
                     if(index_incl == size_incl) {
                         // extract hpp file
                         string header = sufheader(line, index_line); 
