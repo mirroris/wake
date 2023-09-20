@@ -11,7 +11,7 @@ void deptree::depends(string file1, string file2) {
 }
 
 void deptree::expl(string line) {
-
+    cout << include_token << endl;
     int index_line = 0;
     int size_line = line.size();
 
