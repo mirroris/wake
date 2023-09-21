@@ -1,17 +1,21 @@
 #include <bits/stdc++.h>
 #define DEPTREE_HPP
 
+#ifndef FILETOKEN_HPP
+#include "filetoken.hpp"
+#endif
+
 using namespace std;
 
 typedef enum {
-    LINECOM,
     BLOCKCOM,
     CODE
 } status;
 
 class deptree {
     private:
-        unordered_set<string> fid;
+        unordered_set<string> fid_;
+        vector<vector<string>> file_list_;
         status  current_status;
         const string include_token = "#include";
 
@@ -20,7 +24,7 @@ class deptree {
             current_status = CODE;
         }
 
-        void depends(string file1, string file2);
+        void depends(FileToken file_par, FileToken file_chi);
         void expl(string line);  
         void init() {
             current_status = CODE;

@@ -6,7 +6,19 @@
 
 using namespace std;
 
-void deptree::depends(string file1, string file2) {
+void deptree::depends(FileToken file_par, FileToken file_chi) {
+    auto file1_iterator = fid_.find(file_par.getName());
+    auto file2_iterator = fid_.find(file_chi.getName());
+
+    if(file1_iterator==fid_.end()) {
+        fid_.insert(file_par.getName());
+    }
+    if(file2_iterator==fid_.end()) {
+        fid_.insert(file_chi.getName());
+    }
+
+    int target = distance(fid_.begin(), fid_.find(file_par.getName()));
+    file_list_[target].push_back(file_chi.getName());
     return;
 }
 
