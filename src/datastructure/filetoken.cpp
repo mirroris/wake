@@ -7,7 +7,7 @@ using namespace std;
 #endif
 
 FileToken::FileToken(string file_name) {
-    token_ = file_name;
+    path_ = file_name;
     
     int size = file_name.size();
     int index = 0;
@@ -15,18 +15,22 @@ FileToken::FileToken(string file_name) {
     string name;
     string ident;
 
-    while (index<size && file_name[index]!='.') {
+    while (index+1<size 
+        && (file_name[index]!='.'
+        || ((file_name[index+1]=='.') 
+        || (file_name[index+1]=='/')))) {
         if(file_name[index]=='/') {
             name = "";
         } else {
             name+=file_name[index];
         }
-
+        index++;
     }
+    if(index<size && file_name[index]!='.') name+=file_name[index++];
 
-    if(index<size && file_name[index]=='.') {
+    if(index<size && file_name[index++]=='.') {
         while (index<size) {
-            ident+=file_name[index];
+            ident+=file_name[index++];
         }
     } 
 
@@ -43,6 +47,10 @@ FileIdent FileToken::toFileIdent(string ident) {
     } else {
         return NONE;
     }
+}
+
+string FileToken::getPath() {
+    return path_;
 }
 
 FileIdent FileToken::getIdent() {
