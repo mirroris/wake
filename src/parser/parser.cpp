@@ -53,19 +53,30 @@ void parser::parse(string dir_path){
 
             ifstream ifs(next_dir_path , ios::in);
             string buffer;
-
-            dep.init();
+            dep_.init(next_dir_path);
             if (ifs.is_open()) {
                 while ( getline(ifs, buffer) ) {
-                    dep.expl(buffer);
+                    dep_.expl(buffer);
                 }
                 ifs.close();
             } else {
                 cerr << "Failed to open file ("<< next_dir_path << ")." << endl;
                 continue;
             }
+            dep_.appendFileList();
         }
     } 
     
     closedir(dir);
+}
+
+void parser::visualizeDependency() {
+    vector<vector<string>> file_lists = dep_.getFileLists();
+    int n = file_lists.size();
+    for(int i=0;i<n;i++) {
+        for(string file: file_lists[i]) {
+            cout << file << " " ;
+        }
+        cout << endl;
+    }
 }

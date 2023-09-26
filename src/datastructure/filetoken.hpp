@@ -16,15 +16,16 @@ typedef enum FileIdent {
 
 class FileToken {
     private:
-    string token_;
+    string path_;
     string name_;
     FileIdent ident_;
 
     public:
     FileToken(){};
-    FileToken(string file_name);
+    FileToken(string file_path);
     FileIdent toFileIdent(string ident);
 
     FileIdent getIdent();
     string getName();    
+    string getPath();
 };

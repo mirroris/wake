@@ -6,19 +6,8 @@
 
 using namespace std;
 
-void deptree::depends(FileToken file_par, FileToken file_chi) {
-    auto file1_iterator = fid_.find(file_par.getName());
-    auto file2_iterator = fid_.find(file_chi.getName());
-
-    if(file1_iterator==fid_.end()) {
-        fid_.insert(file_par.getName());
-    }
-    if(file2_iterator==fid_.end()) {
-        fid_.insert(file_chi.getName());
-    }
-
-    int target = distance(fid_.begin(), fid_.find(file_par.getName()));
-    file_list_[target].push_back(file_chi.getName());
+void deptree::depends(FileToken file_path) {
+    file_list_.push_back(file_path.getName());
     return;
 }
 
@@ -30,50 +19,64 @@ void deptree::expl(string line) {
     int size_incl = include_token.size();
 
     while (index_line<size_line) {
-        if (current_status == CODE){
-            if( index_line+1 < size_line && line[index_line] == '/') {
-                if (line[index_line+1] == '/') {
-                    /* if "//" is inclueded, then no need to parse the line */
-                    index_line = size_line;
-                }
-                else if (line[index_line+1] == '*') {
-                    current_status = BLOCKCOM;
-                    index_line += 2;
-                }
-                else {
-                    index_line++;
-                }
-                index_incl = 0;
-            } else {
-                if (include_token[index_incl] == line[index_line++]) {
-                    index_incl++;
-                    if(index_incl == size_incl) {
-                        // extract hpp file
-                        string header = sufheader(line, index_line); 
-                        if(!header.empty())cout << "\tdepends : " << header << endl;
+        switch (current_status){
+            case CODE:
+                if( index_line+1 < size_line && line[index_line] == '/') {
+                    if (line[index_line+1] == '/') {
+                        /* if "//" is inclueded, then no need to parse the line */
                         index_line = size_line;
-                    } 
-                } else {
+                    }
+                    else if (line[index_line+1] == '*') {
+                        current_status = BLOCKCOM;
+                        index_line += 2;
+                    }
+                    else {
+                        index_line++;
+                    }
                     index_incl = 0;
-                }
-            } 
-        } else if (current_status == BLOCKCOM) {
-            if (index_line+1 < size_line && line[index_line] == '*') {
-                if(line[index_line+1] == '/') {
-                    current_status = CODE;
-                    index_line+=2;
+                } else if (line[index_line] == '\"') {
+                    current_status = LITERAL; 
+                    index_line++;
+                } else {
+                    if (include_token[index_incl] == line[index_line++]) {
+                        index_incl++;
+                        if(index_incl == size_incl) {
+                            // extract hpp file
+                            string header = sufheader(line, index_line); 
+                            if(!header.empty()) {
+                                depends(FileToken(header));
+                            }
+                            index_line = size_line;
+                        } 
+                    } else {
+                        index_incl = 0;
+                    }
+                } 
+                break;
+            case BLOCKCOM:
+                if (index_line+1 < size_line && line[index_line] == '*') {
+                    if(line[index_line+1] == '/') {
+                        current_status = CODE;
+                        index_line+=2;
+                    } else {
+                        index_line++;
+                    }
                 } else {
                     index_line++;
                 }
-            } else {
+                break;
+            case LITERAL:
+                if (line[index_line] == '\"') {
+                    current_status = CODE;
+                }
                 index_line++;
-            }
-        } 
+                break;
+        }
     } 
     return;
 }
 
-string deptree::sufheader (string line, int index) {
+string deptree::sufheader(string line, int index) {
     string ret = "";
     int n = line.size();
     while (index<n && line[index]==' ') {
@@ -85,4 +88,41 @@ string deptree::sufheader (string line, int index) {
         }
     } 
     return ret; 
+}
+
+void deptree::init(string file_path) {
+    current_status = CODE;
+    file_path_ = file_path;
+    file_list_.clear();
+}
+
+string deptree::getFilePath() {
+    return file_path_;
+}
+
+vector<vector<string>>& deptree::getFileLists() {
+    return file_lists_;
+}
+
+void deptree::appendFileList(){
+    FileToken file_token(file_path_);
+    cout << file_token.getName() << endl;
+    if(fid_.find(file_token.getName()) == fid_.end()) {
+        assignFileId(file_token.getName());
+        file_lists_.push_back(file_list_);
+    } else {
+        int tar = fid_[file_token.getName()];
+        for (string file: file_list_) {
+            file_lists_[tar].push_back(file);
+        }
+    }
+    for(string file: file_list_) {
+        cout << file << " ";
+    }
+    cout << endl;
+    return;
+}
+
+void deptree::assignFileId(string file_path) {
+    fid_.insert({file_path, file_count_++});
 }
