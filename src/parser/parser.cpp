@@ -49,8 +49,6 @@ void parser::parse(string dir_path){
 
             if ( fileident.compare(".hpp")!=0 && fileident.compare(".cpp")!=0) continue; 
 
-            cout << "file (parent): " << entry->d_name << endl;
-
             ifstream ifs(next_dir_path , ios::in);
             string buffer;
             dep_.init(next_dir_path);
@@ -73,8 +71,10 @@ void parser::parse(string dir_path){
 void parser::visualizeDependency() {
     vector<vector<string>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
-    for(int i=0;i<n;i++) {
-        for(string file: file_lists[i]) {
+    for(auto p: dep_.getFid()) {
+        int tar = p.second;
+        cout << p.first << " : ";
+        for(string file: file_lists[tar]) {
             cout << file << " " ;
         }
         cout << endl;

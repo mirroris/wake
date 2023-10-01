@@ -7,7 +7,7 @@
 using namespace std;
 
 void deptree::depends(FileToken file_path) {
-    file_list_.push_back(file_path.getName());
+    if(file_path.getName() != FileToken(file_path_).getName()) file_list_.push_back(file_path.getName());
     return;
 }
 
@@ -92,8 +92,9 @@ string deptree::sufheader(string line, int index) {
 
 void deptree::init(string file_path) {
     current_status = CODE;
-    file_path_ = file_path;
     file_list_.clear();
+    file_path_ = file_path;
+    file_list_.push_back(file_path);
 }
 
 string deptree::getFilePath() {
@@ -106,7 +107,6 @@ vector<vector<string>>& deptree::getFileLists() {
 
 void deptree::appendFileList(){
     FileToken file_token(file_path_);
-    cout << file_token.getName() << endl;
     if(fid_.find(file_token.getName()) == fid_.end()) {
         assignFileId(file_token.getName());
         file_lists_.push_back(file_list_);
@@ -116,13 +116,13 @@ void deptree::appendFileList(){
             file_lists_[tar].push_back(file);
         }
     }
-    for(string file: file_list_) {
-        cout << file << " ";
-    }
-    cout << endl;
     return;
 }
 
 void deptree::assignFileId(string file_path) {
     fid_.insert({file_path, file_count_++});
+}
+
+unordered_map<string, int>& deptree::getFid() {
+    return fid_;
 }

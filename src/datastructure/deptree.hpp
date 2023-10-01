@@ -37,4 +37,5 @@ class deptree {
         vector<vector<string>>& getFileLists();
         void appendFileList();
         void assignFileId(string file_path);
+        unordered_map<string, int>& getFid();
 };
