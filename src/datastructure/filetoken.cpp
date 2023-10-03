@@ -61,10 +61,10 @@ string FileToken::getName() const{
     return name_;
 }   
 
-bool FileToken::isCFile() {
+bool FileToken::isCFile() const {
     return (ident_==C) || (ident_==CC) || (ident_==CPP);
 }
 
-bool FileToken::isHFile() {
+bool FileToken::isHFile() const {
     return (ident_==H) || (ident_==HPP);
 }

@@ -72,9 +72,13 @@ void Parser::visualizeDependency() {
     ofstream ofs("Makefile", ios::app);
     vector<vector<FileToken>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
+    vector<string> src_files;
+
     for(auto p: dep_.getFid()) {
         int tar = p.second;
         ofs << p.first.getName() << " : ";
+        if(p.first.isCFile()) src_files.push_back(p.first.getName());
+
         for(FileToken file_token: file_lists[tar]) {
             if(file_token.getName() != p.first.getName()) ofs << file_token.getName() << " " ;
             else ofs <<  file_token.getPath() << " ";
@@ -82,5 +86,13 @@ void Parser::visualizeDependency() {
         ofs << endl;
         ofs << "\t$(CC) $(OPT) -c " << p.first.getPath() << " -o ../bin/" << p.first.getName() << ".o" << endl; 
     }
+
+    ofs << "SRC=";
+    for (string src: src_files) {
+        ofs << "../bin/" << src << ".o ";
+    }
+    ofs  << endl;
+    ofs << "default : $(MAIN)" << endl;
+    ofs << "\t$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)" << endl;
     ofs.close();
 }
