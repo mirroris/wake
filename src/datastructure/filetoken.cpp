@@ -49,14 +49,14 @@ FileIdent FileToken::toFileIdent(string ident) {
     }
 }
 
-string FileToken::getPath() {
+string FileToken::getPath() const{
     return path_;
 }
 
-FileIdent FileToken::getIdent() {
+FileIdent FileToken::getIdent() const{
     return ident_;
 }
 
-string FileToken::getName() {
+string FileToken::getName() const{
     return name_;
 }   

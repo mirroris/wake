@@ -16,7 +16,7 @@
 using namespace std;
 using mystat = struct stat;
 
-void parser::parse(string dir_path){
+void Parser::parse(string dir_path){
     DIR *dir;
     mystat st;
     dirent *entry;
@@ -68,15 +68,15 @@ void parser::parse(string dir_path){
     closedir(dir);
 }
 
-void parser::visualizeDependency() {
+void Parser::visualizeDependency() {
     vector<vector<string>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
     for(auto p: dep_.getFid()) {
         int tar = p.second;
-        cout << p.first << " : ";
+        cout << p.first.getName() << " : ";
         for(string file: file_lists[tar]) {
             cout << file << " " ;
         }
-        cout << endl;
+        cout << "\n\n";
     }
 }
