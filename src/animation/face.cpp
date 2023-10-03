@@ -6,14 +6,14 @@
 #include <string>
 using namespace std;
 
-string face::blink(){
-    return " (v v) ";
+void face::blink(){
+    return;
 }
 
-string face::awake(){
-    return " (o o) ";
+void face::awake(){
+    return;
 }
 
-string face::poker() {
-    return " (- -) ";
+void face::poker() {
+    return;
 }

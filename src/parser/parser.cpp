@@ -69,14 +69,18 @@ void Parser::parse(string dir_path){
 }
 
 void Parser::visualizeDependency() {
-    vector<vector<string>> file_lists = dep_.getFileLists();
+    ofstream ofs("Makefile", ios::app);
+    vector<vector<FileToken>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
     for(auto p: dep_.getFid()) {
         int tar = p.second;
-        cout << p.first.getName() << " : ";
-        for(string file: file_lists[tar]) {
-            cout << file << " " ;
+        ofs << p.first.getName() << " : ";
+        for(FileToken file_token: file_lists[tar]) {
+            if(file_token.getName() != p.first.getName()) ofs << file_token.getName() << " " ;
+            else ofs <<  file_token.getPath() << " ";
         }
-        cout << "\n\n";
+        ofs << endl;
+        ofs << "\t$(CC) $(OPT) -c " << p.first.getPath() << " -o ../bin/" << p.first.getName() << ".o" << endl; 
     }
+    ofs.close();
 }

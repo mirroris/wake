@@ -6,8 +6,8 @@
 
 using namespace std;
 
-void Deptree::depends(FileToken file_path) {
-    if(file_path.getName() != FileToken(file_path_).getName()) file_list_.push_back(file_path.getName());
+void Deptree::depends(FileToken file_token) {
+    if(file_token.getName() != FileToken(file_path_).getName()) file_list_.push_back(file_token);
     return;
 }
 
@@ -94,33 +94,33 @@ void Deptree::init(string file_path) {
     current_status_ = CODE;
     file_list_.clear();
     file_path_ = file_path;
-    file_list_.push_back(file_path);
+    file_list_.push_back(FileToken(file_path));
 }
 
 string Deptree::getFilePath() {
     return file_path_;
 }
 
-vector<vector<string>>& Deptree::getFileLists() {
+vector<vector<FileToken>>& Deptree::getFileLists() {
     return file_lists_;
 }
 
 void Deptree::appendFileList(){
     FileToken file_token(file_path_);
-    if(fid_.find(file_token.getName()) == fid_.end()) {
-        assignFileId(file_token.getName());
+    if(fid_.find(file_token) == fid_.end()) {
+        assignFileId(file_token);
         file_lists_.push_back(file_list_);
     } else {
-        int tar = fid_[file_token.getName()];
-        for (string file: file_list_) {
-            file_lists_[tar].push_back(file);
+        int tar = fid_[file_token];
+        for (FileToken file_token: file_list_) {
+            file_lists_[tar].push_back(file_token);
         }
     }
     return;
 }
 
-void Deptree::assignFileId(string file_path) {
-    fid_.insert({file_path, file_count_++});
+void Deptree::assignFileId(FileToken file_token) {
+    fid_.insert({file_token, file_count_++});
 }
 
 map<FileToken, int, Comparator>& Deptree::getFid(){

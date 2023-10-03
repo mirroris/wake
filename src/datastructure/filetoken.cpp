@@ -60,3 +60,11 @@ FileIdent FileToken::getIdent() const{
 string FileToken::getName() const{
     return name_;
 }   
+
+bool FileToken::isCFile() {
+    return (ident_==C) || (ident_==CC) || (ident_==CPP);
+}
+
+bool FileToken::isHFile() {
+    return (ident_==H) || (ident_==HPP);
+}
