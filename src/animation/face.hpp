@@ -6,4 +6,4 @@ class face {
         void blink();
         void awake();
         void poker();
-}
+};

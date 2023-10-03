@@ -1,16 +1,18 @@
-
-
-default: main.o
-	g++ main.o parser/parser.o datastructure/deptree.o datastructure/filetoken.o -o wake 
-
-main.o:  parser.o
-	g++ -c main.cpp -o main.o 
-
-parser.o :deptree.o parser/parser.cpp parser/parser.hpp
-	g++ -c parser/parser.cpp -o parser/parser.o
-
-deptree.o : datastructure/deptree.cpp datastructure/deptree.hpp filetoken.o
-	g++ -c -o datastructure/deptree.o datastructure/deptree.cpp 
-
-filetoken.o : datastructure/filetoken.cpp datastructure/filetoken.hpp
-	g++ -c -o datastructure/filetoken.o datastructure/filetoken.cpp
+CC=g++
+OPT=-O2
+animation : ./animation/animation.cpp ./animation/animation.hpp zzz face 
+	$(CC) $(OPT) -c ./animation/animation.cpp -o ../bin/animation.o
+builder : ./builder/builder.cpp ./builder/builder.hpp 
+	$(CC) $(OPT) -c ./builder/builder.cpp -o ../bin/builder.o
+deptree : ./datastructure/deptree.cpp ./datastructure/deptree.hpp filetoken 
+	$(CC) $(OPT) -c ./datastructure/deptree.cpp -o ../bin/deptree.o
+face : ./animation/face.cpp ./animation/face.hpp 
+	$(CC) $(OPT) -c ./animation/face.cpp -o ../bin/face.o
+filetoken : ./datastructure/filetoken.cpp ./datastructure/filetoken.hpp 
+	$(CC) $(OPT) -c ./datastructure/filetoken.cpp -o ../bin/filetoken.o
+main : ./main.cpp parser builder 
+	$(CC) $(OPT) -c ./main.cpp -o ../bin/main.o
+parser : ./parser/parser.cpp ./parser/parser.hpp deptree 
+	$(CC) $(OPT) -c ./parser/parser.cpp -o ../bin/parser.o
+zzz : ./animation/zzz.cpp ./animation/zzz.hpp 
+	$(CC) $(OPT) -c ./animation/zzz.cpp -o ../bin/zzz.o

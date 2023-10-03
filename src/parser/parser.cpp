@@ -16,7 +16,7 @@
 using namespace std;
 using mystat = struct stat;
 
-void parser::parse(string dir_path){
+void Parser::parse(string dir_path){
     DIR *dir;
     mystat st;
     dirent *entry;
@@ -49,8 +49,6 @@ void parser::parse(string dir_path){
 
             if ( fileident.compare(".hpp")!=0 && fileident.compare(".cpp")!=0) continue; 
 
-            cout << "file (parent): " << entry->d_name << endl;
-
             ifstream ifs(next_dir_path , ios::in);
             string buffer;
             dep_.init(next_dir_path);
@@ -70,13 +68,19 @@ void parser::parse(string dir_path){
     closedir(dir);
 }
 
-void parser::visualizeDependency() {
-    vector<vector<string>> file_lists = dep_.getFileLists();
+void Parser::visualizeDependency() {
+    ofstream ofs("Makefile", ios::app);
+    vector<vector<FileToken>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
-    for(int i=0;i<n;i++) {
-        for(string file: file_lists[i]) {
-            cout << file << " " ;
+    for(auto p: dep_.getFid()) {
+        int tar = p.second;
+        ofs << p.first.getName() << " : ";
+        for(FileToken file_token: file_lists[tar]) {
+            if(file_token.getName() != p.first.getName()) ofs << file_token.getName() << " " ;
+            else ofs <<  file_token.getPath() << " ";
         }
-        cout << endl;
+        ofs << endl;
+        ofs << "\t$(CC) $(OPT) -c " << p.first.getPath() << " -o ../bin/" << p.first.getName() << ".o" << endl; 
     }
+    ofs.close();
 }

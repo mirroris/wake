@@ -10,14 +10,14 @@
 using dirent = struct dirent;
 using namespace std;
 
-class parser {
+class Parser {
     private:
         dirent *m_dirent_;
         string dir_path_;
-        deptree dep_;
+        Deptree dep_;
     public:
-        parser(){return;}
-        parser(string path):dir_path_(path) {return;}
+        Parser(){return;}
+        Parser(string path):dir_path_(path) {return;}
         void parse(string dir_path);
         void visualizeDependency();
 };

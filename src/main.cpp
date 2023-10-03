@@ -1,10 +1,13 @@
 #include<iostream>
 
 #include "parser/parser.hpp"
+#include "builder/builder.hpp"
 
 int main(){
-    parser m_parser = parser();
-    m_parser.parse(".");
-    m_parser.visualizeDependency();
+    Parser parser = Parser();
+    parser.parse(".");
+    Builder builder;
+    builder.build();
+    parser.visualizeDependency();
     return 0;
 }

@@ -13,28 +13,35 @@ typedef enum {
     LITERAL
 } status;
 
-class deptree {
+typedef struct Comparator {
+    bool operator()(const FileToken& a, const FileToken& b) const{
+        return (a.getName() < b.getName());
+    }
+} Comparator;
+
+class Deptree {
     private:
-        unordered_map<string, int> fid_;
-        vector<string> file_list_;
-        vector<vector<string>> file_lists_;
+        map<FileToken, int, Comparator> fid_;
+        vector<FileToken> file_list_;
+        vector<vector<FileToken>> file_lists_;
         string file_path_;
-        status current_status;
+        status current_status_;
         int file_count_;
-        const string include_token = "#include";
+        const string kIncludeToken = "#include";
 
     public:
-        deptree() {
-            current_status = CODE;
+        Deptree() {
+            current_status_ = CODE;
             file_count_ = 0;
         }
 
-        void depends(FileToken file_path);
+        void depends(FileToken file_token);
         void expl(string line);  
         void init(string file_path);
         string getFilePath();
         string sufheader(string line, int index);
-        vector<vector<string>>& getFileLists();
+        vector<vector<FileToken>>& getFileLists();
         void appendFileList();
-        void assignFileId(string file_path);
+        void assignFileId(FileToken file_token);
+        map<FileToken, int, Comparator>& getFid();
 };

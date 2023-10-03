@@ -24,8 +24,9 @@ class FileToken {
     FileToken(){};
     FileToken(string file_path);
     FileIdent toFileIdent(string ident);
-
-    FileIdent getIdent();
-    string getName();    
-    string getPath();
+    bool isCFile();
+    bool isHFile();
+    FileIdent getIdent() const;
+    string getName() const ;    
+    string getPath() const ;
 };
