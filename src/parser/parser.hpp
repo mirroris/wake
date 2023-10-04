@@ -20,6 +20,6 @@ class Parser {
         Parser(){return;}
         Parser(string path):dir_path_(path) {return;}
         void parse(string dir_path);
-        void visualizeDependency();
+        void dependencyBuild();
         vector<FileToken>& getSrcFiles();
 };

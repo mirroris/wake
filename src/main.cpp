@@ -8,6 +8,6 @@ int main(){
     parser.parse(".");
     Builder builder;
     builder.build();
-    parser.visualizeDependency();
+    parser.dependencyBuild();
     return 0;
 }

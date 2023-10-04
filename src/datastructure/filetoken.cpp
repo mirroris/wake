@@ -68,3 +68,18 @@ bool FileToken::isCFile() const {
 bool FileToken::isHFile() const {
     return (ident_==H) || (ident_==HPP);
 }
+
+string FileToken::getObjFile() const {
+    // skipping the './' if it exists
+    int left = (path_[0]=='.')? 2: 0;
+    int right = path_.size()-1;
+    while (right>=0 && path_[right]!='.') {
+        right--;
+    }
+    string ret = "$(BINDIR)/";
+    for (int i=left;i<=right;i++) {
+        ret += path_[i];
+    }
+    ret += 'o';
+    return ret;
+}

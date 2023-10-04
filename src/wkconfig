@@ -2,3 +2,5 @@ CC=g++
 OPT=-O2
 COMMAND=wake
 MAIN=main
+BINDIR=../bin
+SRCDIR=src
