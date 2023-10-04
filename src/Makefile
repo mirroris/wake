@@ -2,6 +2,8 @@ CC=g++
 OPT=-O2
 COMMAND=wake
 MAIN=main
+SRCDIR=src
+BINDIR=bin
 animation : ./animation/animation.cpp ./animation/animation.hpp zzz face 
 	$(CC) $(OPT) -c ./animation/animation.cpp -o ../bin/animation.o
 builder : ./builder/builder.cpp ./builder/builder.hpp 
