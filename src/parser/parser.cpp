@@ -37,17 +37,9 @@ void Parser::parse(string dir_path){
             parse(next_dir_path);
         } else if(S_ISREG(st.st_mode)){
 
-            int index = 0;
-            while (entry->d_name[index]!='\0' && entry->d_name[index]!='.') {
-                index++;
-            }
-            string fileident = "";
-            while (entry->d_name[index]!='\0') {
-                fileident += entry->d_name[index];
-                index++;
-            }
-
-            if ( fileident.compare(".hpp")!=0 && fileident.compare(".cpp")!=0) continue; 
+            FileToken file_token(next_dir_path);
+            if ( !file_token.isCFile() && !file_token.isHFile()) continue; 
+            if(file_token.isCFile()) src_files_.push_back(file_token);
 
             ifstream ifs(next_dir_path , ios::in);
             string buffer;
@@ -72,12 +64,19 @@ void Parser::visualizeDependency() {
     ofstream ofs("Makefile", ios::app);
     vector<vector<FileToken>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
-    vector<string> src_files;
+
+    ofs << "SRC=";
+    for (FileToken file_token: src_files_) {
+        ofs << "../bin/" << file_token.getPath() << ".o ";
+    }
+    ofs  << endl;
+    ofs << "default : $(MAIN)" << endl;
+    ofs << "\t$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)" << endl;
 
     for(auto p: dep_.getFid()) {
         int tar = p.second;
         ofs << p.first.getName() << " : ";
-        if(p.first.isCFile()) src_files.push_back(p.first.getName());
+        if(p.first.isCFile()) src_files_.push_back(p.first.getName());
 
         for(FileToken file_token: file_lists[tar]) {
             if(file_token.getName() != p.first.getName()) ofs << file_token.getName() << " " ;
@@ -87,12 +86,9 @@ void Parser::visualizeDependency() {
         ofs << "\t$(CC) $(OPT) -c " << p.first.getPath() << " -o ../bin/" << p.first.getName() << ".o" << endl; 
     }
 
-    ofs << "SRC=";
-    for (string src: src_files) {
-        ofs << "../bin/" << src << ".o ";
-    }
-    ofs  << endl;
-    ofs << "default : $(MAIN)" << endl;
-    ofs << "\t$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)" << endl;
     ofs.close();
+}
+
+vector<FileToken>& Parser::getSrcFiles() {
+    return src_files_;
 }

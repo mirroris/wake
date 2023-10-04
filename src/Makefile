@@ -2,8 +2,9 @@ CC=g++
 OPT=-O2
 COMMAND=wake
 MAIN=main
-SRCDIR=src
-BINDIR=bin
+SRC=../bin/./animation/animation.cpp.o ../bin/./animation/face.cpp.o ../bin/./animation/zzz.cpp.o ../bin/./builder/builder.cpp.o ../bin/./datastructure/deptree.cpp.o ../bin/./datastructure/filetoken.cpp.o ../bin/./main.cpp.o ../bin/./parser/parser.cpp.o 
+default : $(MAIN)
+	$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)
 animation : ./animation/animation.cpp ./animation/animation.hpp zzz face 
 	$(CC) $(OPT) -c ./animation/animation.cpp -o ../bin/animation.o
 builder : ./builder/builder.cpp ./builder/builder.hpp 
@@ -20,6 +21,3 @@ parser : ./parser/parser.cpp ./parser/parser.hpp deptree
 	$(CC) $(OPT) -c ./parser/parser.cpp -o ../bin/parser.o
 zzz : ./animation/zzz.cpp ./animation/zzz.hpp 
 	$(CC) $(OPT) -c ./animation/zzz.cpp -o ../bin/zzz.o
-SRC=../bin/animation.o ../bin/builder.o ../bin/deptree.o ../bin/face.o ../bin/filetoken.o ../bin/main.o ../bin/parser.o ../bin/zzz.o 
-default : $(MAIN)
-	$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)
