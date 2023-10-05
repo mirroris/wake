@@ -14,7 +14,7 @@ class Parser {
     private:
         dirent *m_dirent_;
         string dir_path_;
-        Deptree dep_;
+        DepTree dep_;
         vector<FileToken> src_files_;
     public:
         Parser(){return;}

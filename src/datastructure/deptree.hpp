@@ -19,9 +19,22 @@ typedef struct Comparator {
     }
 } Comparator;
 
-class Deptree {
+typedef struct Equal {
+    bool operator()(const FileToken& a, const FileToken& b) const {
+        return (a.getName() == b.getName());
+    }
+} Equal;
+
+typedef struct Hash {
+    size_t operator()(const FileToken& a) const {
+        return hash<string>()(a.getName());
+    }
+} Hash;
+
+class DepTree {
     private:
-        map<FileToken, int, Comparator> fid_;
+        unordered_map<FileToken, int, Hash, Equal> fid_;
+        unordered_set<FileToken, Hash, Equal> child_;
         vector<FileToken> file_list_;
         vector<vector<FileToken>> file_lists_;
         string file_path_;
@@ -30,7 +43,7 @@ class Deptree {
         const string kIncludeToken = "#include";
 
     public:
-        Deptree() {
+        DepTree() {
             current_status_ = CODE;
             file_count_ = 0;
         }
@@ -43,5 +56,6 @@ class Deptree {
         vector<vector<FileToken>>& getFileLists();
         void appendFileList();
         void assignFileId(FileToken file_token);
-        map<FileToken, int, Comparator>& getFid();
+        unordered_map<FileToken, int, Hash, Equal>& getFid();
+        bool isRoot(FileToken file_token);
 };
