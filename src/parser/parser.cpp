@@ -60,30 +60,42 @@ void Parser::parse(string dir_path){
     closedir(dir);
 }
 
-void Parser::visualizeDependency() {
+void Parser::dependencyBuild() {
     ofstream ofs("Makefile", ios::app);
     vector<vector<FileToken>> file_lists = dep_.getFileLists();
     int n = file_lists.size();
 
-    ofs << "SRC=";
+    string src_list;
+    string main_list;
     for (FileToken file_token: src_files_) {
-        ofs << "../bin/" << file_token.getPath() << ".o ";
+        src_list += file_token.getObjFile() + " ";
+        if(dep_.isRoot(file_token)) {
+            main_list += file_token.getObjFile() + " ";
+        }
     }
-    ofs  << endl;
+    ofs << "SRC=" << src_list << endl;
+    ofs << "MAIN=" << main_list << endl;
+
+    ofs << "dir_guard=@mkdir -p $(@D)" <<endl;
+
     ofs << "default : $(MAIN)" << endl;
-    ofs << "\t$(CC) $(OPT) $(SRC) -o ../bin/$(COMMAND)" << endl;
+    ofs << "\t$(dir_guard)" <<endl;
+    ofs << "\t$(CC) $(OPT) $(SRC) -o $(BINDIR)/$(COMMAND)" << endl;
 
     for(auto p: dep_.getFid()) {
         int tar = p.second;
-        ofs << p.first.getName() << " : ";
-        if(p.first.isCFile()) src_files_.push_back(p.first.getName());
+        ofs << p.first.getObjFile() << " : ";
 
         for(FileToken file_token: file_lists[tar]) {
-            if(file_token.getName() != p.first.getName()) ofs << file_token.getName() << " " ;
-            else ofs <<  file_token.getPath() << " ";
+            if(file_token.getName() != p.first.getName()) {
+                ofs << file_token.getObjFile() << " " ;
+            } else {
+                ofs <<  file_token.getPath() << " ";
+            }
         }
         ofs << endl;
-        ofs << "\t$(CC) $(OPT) -c " << p.first.getPath() << " -o ../bin/" << p.first.getName() << ".o" << endl; 
+        ofs << "\t$(dir_guard)" <<endl;
+        ofs << "\t$(CC) $(OPT) -c " << p.first.getCFile() << " -o $@"<< endl; 
     }
 
     ofs.close();

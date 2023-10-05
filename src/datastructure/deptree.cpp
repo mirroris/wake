@@ -6,12 +6,16 @@
 
 using namespace std;
 
-void Deptree::depends(FileToken file_token) {
-    if(file_token.getName() != FileToken(file_path_).getName()) file_list_.push_back(file_token);
+void DepTree::depends(FileToken file_token) {
+    if(file_token.getName() != FileToken(file_path_).getName()) {
+        assignFileId(file_token);
+        child_.insert(file_token);
+        file_list_.push_back(file_token);
+    }
     return;
 }
 
-void Deptree::expl(string line) {
+void DepTree::expl(string line) {
     int index_line = 0;
     int size_line = line.size();
 
@@ -44,7 +48,7 @@ void Deptree::expl(string line) {
                             // extract hpp file
                             string header = sufheader(line, index_line); 
                             if(!header.empty()) {
-                                depends(FileToken(header));
+                                depends(FileToken(header, file_path_));
                             }
                             index_line = size_line;
                         } 
@@ -76,7 +80,7 @@ void Deptree::expl(string line) {
     return;
 }
 
-string Deptree::sufheader(string line, int index) {
+string DepTree::sufheader(string line, int index) {
     string ret = "";
     int n = line.size();
     while (index<n && line[index]==' ') {
@@ -90,39 +94,47 @@ string Deptree::sufheader(string line, int index) {
     return ret; 
 }
 
-void Deptree::init(string file_path) {
+void DepTree::init(string file_path) {
     current_status_ = CODE;
     file_list_.clear();
     file_path_ = file_path;
-    file_list_.push_back(FileToken(file_path));
+    FileToken file_token(file_path);
+    assignFileId(file_token);
+    file_list_.push_back(file_token);
 }
 
-string Deptree::getFilePath() {
+string DepTree::getFilePath() {
     return file_path_;
 }
 
-vector<vector<FileToken>>& Deptree::getFileLists() {
+vector<vector<FileToken>>& DepTree::getFileLists() {
     return file_lists_;
 }
 
-void Deptree::appendFileList(){
+void DepTree::appendFileList(){
     FileToken file_token(file_path_);
-    if(fid_.find(file_token) == fid_.end()) {
-        assignFileId(file_token);
-        file_lists_.push_back(file_list_);
-    } else {
-        int tar = fid_[file_token];
-        for (FileToken file_token: file_list_) {
-            file_lists_[tar].push_back(file_token);
-        }
+    int tar = fid_[file_token];
+    for (FileToken file_token: file_list_) {
+        file_lists_[tar].push_back(file_token);
     }
     return;
 }
 
-void Deptree::assignFileId(FileToken file_token) {
-    fid_.insert({file_token, file_count_++});
+void DepTree::assignFileId(FileToken file_token) {
+    if(fid_.find(file_token) == fid_.end()) {
+        file_lists_.push_back(vector<FileToken>());
+        fid_.insert({file_token, file_count_++});
+    }
 }
 
-map<FileToken, int, Comparator>& Deptree::getFid(){
+unordered_map<FileToken, int, Hash, Equal>& DepTree::getFid(){
     return fid_;
+}
+
+bool DepTree::isRoot(FileToken file_token) {
+    if(child_.find(file_token) != child_.end()) {
+        return false;
+    } else {
+        return true;
+    }
 }

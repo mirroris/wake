@@ -14,12 +14,12 @@ class Parser {
     private:
         dirent *m_dirent_;
         string dir_path_;
-        Deptree dep_;
+        DepTree dep_;
         vector<FileToken> src_files_;
     public:
         Parser(){return;}
         Parser(string path):dir_path_(path) {return;}
         void parse(string dir_path);
-        void visualizeDependency();
+        void dependencyBuild();
         vector<FileToken>& getSrcFiles();
 };

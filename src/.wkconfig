@@ -1,32 +1,3 @@
-animation : ./animation/animation.cpp animation zzz face 
-$(CC) $(OPT) -c ./animation/animation.cpp -o bin/animation.o
-builder : ./builder/builder.cpp builder 
-$(CC) $(OPT) -c ./builder/builder.cpp -o bin/builder.o
-deptree : ./datastructure/deptree.cpp deptree filetoken 
-$(CC) $(OPT) -c ./datastructure/deptree.cpp -o bin/deptree.o
-face : ./animation/face.cpp face 
-$(CC) $(OPT) -c ./animation/face.cpp -o bin/face.o
-filetoken : ./datastructure/filetoken.cpp filetoken 
-$(CC) $(OPT) -c ./datastructure/filetoken.cpp -o bin/filetoken.o
-main : ./main.cpp parser builder 
-$(CC) $(OPT) -c ./main.cpp -o bin/main.o
-parser : ./parser/parser.cpp parser deptree 
-$(CC) $(OPT) -c ./parser/parser.cpp -o bin/parser.o
-zzz : ./animation/zzz.cpp zzz 
-$(CC) $(OPT) -c ./animation/zzz.cpp -o bin/zzz.o
-animation : ./animation/animation.cpp animation zzz face 
-$(CC) $(OPT) -c ./animation/animation.cpp -o bin/animation.o
-builder : ./builder/builder.cpp builder 
-$(CC) $(OPT) -c ./builder/builder.cpp -o bin/builder.o
-deptree : ./datastructure/deptree.cpp deptree filetoken 
-$(CC) $(OPT) -c ./datastructure/deptree.cpp -o bin/deptree.o
-face : ./animation/face.cpp face 
-$(CC) $(OPT) -c ./animation/face.cpp -o bin/face.o
-filetoken : ./datastructure/filetoken.cpp filetoken 
-$(CC) $(OPT) -c ./datastructure/filetoken.cpp -o bin/filetoken.o
-main : ./main.cpp parser builder 
-$(CC) $(OPT) -c ./main.cpp -o bin/main.o
-parser : ./parser/parser.cpp parser deptree 
-$(CC) $(OPT) -c ./parser/parser.cpp -o bin/parser.o
-zzz : ./animation/zzz.cpp zzz 
-$(CC) $(OPT) -c ./animation/zzz.cpp -o bin/zzz.o
+OPT=-O2
+COMMAND=wake
+BINDIR=../bin
