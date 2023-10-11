@@ -3,9 +3,10 @@
 #include "parser/parser.hpp"
 #include "builder/builder.hpp"
 
-int main(){
+int main(int argc, char** argv){
     Parser parser = Parser();
-    parser.parse(".");
+    if(argc==2) parser.parse(argv[1]);
+    else cerr << "src dir is needed!" << endl;
     Builder builder;
     builder.build();
     parser.dependencyBuild();
